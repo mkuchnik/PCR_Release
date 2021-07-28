@@ -1,0 +1,2 @@
+sqlitedict==1.6.0
+nvidia-dali --extra-index-url https://developer.download.nvidia.com/compute/redist/cuda/10.0
