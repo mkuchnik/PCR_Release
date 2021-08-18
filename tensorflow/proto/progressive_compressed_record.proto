@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package tensorflow;
+
+option cc_enable_arenas = true;
+
+message ScanGroup {
+  repeated bytes image_bytes = 1;
+}
+
+message MetadataRecord {
+  repeated int32 labels = 1;
+  int32 progressive_levels = 2;
+  int32 version = 3;
+}
+
+message RecordOffsetsIndex {
+  string name = 1;
+  repeated int32 offsets = 2;
+}
+
+message DatasetOffsetsIndex {
+  repeated RecordOffsetsIndex records = 1;
+}
+
+// From example.proto and feature.proto
+// Containers to hold repeated fundamental values.
+message PCRBytesList {
+  repeated bytes value = 1;
+}
+message PCRFloatList {
+  repeated float value = 1 [packed = true];
+}
+message PCRInt64List {
+  repeated int64 value = 1 [packed = true];
+}
+
+// These are taken from Tensorflow
+// TODO(mkuchnik): Import example.proto protobuf to share
+// Containers for non-sequential data.
+message PCRFeature {
+  // Each feature can be exactly one kind.
+  oneof kind {
+    PCRBytesList bytes_list = 1;
+    PCRFloatList float_list = 2;
+    PCRInt64List int64_list = 3;
+  }
+}
+
+message PCRFeatures {
+  // Map from feature name to feature.
+  map<string, PCRFeature> feature = 1;
+}
+
+// Containers for sequential data.
+//
+// A FeatureList contains lists of Features.  These may hold zero or more
+// Feature values.
+//
+// FeatureLists are organized into categories by name.  The FeatureLists message
+// contains the mapping from name to FeatureList.
+//
+message PCRFeatureList {
+  repeated PCRFeature feature = 1;
+}
+
+message PCRFeatureLists {
+  // Map from feature name to feature list.
+  map<string, PCRFeatureList> feature_list = 1;
+}
+
+message PCRExample {
+  PCRFeatures features = 1;
+}
+
+message PCRSequenceExample {
+  PCRFeatures context = 1;
+  PCRFeatureLists feature_lists = 2;
+}
+
+message MetadataRecordv2 {
+  int32 version = 1;
+  PCRExample example = 2;
+  string progressive_feature = 3; // The feature is packed after
+}

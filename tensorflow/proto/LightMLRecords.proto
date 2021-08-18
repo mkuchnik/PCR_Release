@@ -1,0 +1,46 @@
+syntax = "proto2";
+
+package LightMLRecords;
+
+option cc_enable_arenas = true;
+
+message MLExample {
+  required int32 label = 1;
+  required bytes image_bytes = 2;
+}
+
+message MLRecord {
+  repeated MLExample examples = 1;
+}
+
+message ScanGroup {
+  repeated bytes image_bytes = 1;
+}
+
+message BulkProgressiveMLRecord {
+  repeated int32 labels = 1;
+  required int32 progressive_levels = 2;
+  repeated ScanGroup scans = 3;
+}
+
+message MetadataRecord {
+  repeated int32 labels = 1;
+  required int32 progressive_levels = 2;
+  optional int32 version = 3;
+}
+
+message MappedMetadataRecord {
+  repeated int32 labels = 1;
+  required int32 progressive_levels = 2;
+  repeated int32 offsets = 3;
+  required int32 version = 4;
+}
+
+message ImageShape {
+  required int32 w = 1;
+  required int32 h = 2;
+}
+
+message CodesShape {
+  repeated int32 shape = 1;
+}
